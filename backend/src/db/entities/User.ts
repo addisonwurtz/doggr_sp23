@@ -1,6 +1,7 @@
-import { Entity, Property, Unique, OneToMany, Collection, Cascade } from "@mikro-orm/core";
-import { BaseEntity } from "./BaseEntity.js";
-import { Match } from "./Match.js";
+import {Cascade, Collection, Entity, OneToMany, Property, Unique} from "@mikro-orm/core";
+import {BaseEntity} from "./BaseEntity.js";
+import {Match} from "./Match.js";
+import {Message} from "./Message.js";
 
 @Entity({ tableName: "users"})
 export class User extends BaseEntity {	
@@ -28,5 +29,19 @@ export class User extends BaseEntity {
 		{cascade: [Cascade.PERSIST, Cascade.REMOVE]}
 	)
 	matched_by!: Collection<Match>;
-
+	
+	// MESSAGES:
+	@OneToMany(
+		() => Message,
+		message => message.sender,
+		{cascade: [Cascade.PERSIST, Cascade.REMOVE]}
+	)
+	sent_messages!: Collection<Message>;
+	
+	@OneToMany(
+		() => Message,
+		message => message.receiver,
+		{cascade: [Cascade.PERSIST, Cascade.REMOVE]}
+	)
+	recieved_messages!: Collection<Message>;
 }
