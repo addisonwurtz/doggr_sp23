@@ -11,7 +11,7 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 	}
 	
 	app.get('/hello', async (request: FastifyRequest, reply: FastifyReply) => {
-		return 'hello, you\'ve reached the server!';
+		return "hello, you've reached the server!";
 	});
 	
 	app.get("/dbTest", async (request: FastifyRequest, reply: FastifyReply) => {

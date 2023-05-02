@@ -9,15 +9,18 @@ console.log(__dirname);
 export const badWordFilter = async function(message:string) {
 	try {
 		const data = await fs.readFile(path.resolve(__dirname, './badwords.txt'));
-		const badwords = data.toString().split('\n');
+		const badwords = data.toString().split('\r\n');
 		const message_words = message.split(" ");
-		for (const each in badwords) {
-			for (const word in message_words) {
-				if (each == word) {
-					throw new Error("Message cannot be sent. You used a bad word!");
-					
+		
+		for (const i in badwords) {
+		  if (badwords[i].includes(" ") && message.toLowerCase().includes(badwords[i].toLowerCase())) {
+				throw new Error("Message cannot be sent. You used a bad word!");
+		  }
+		  for (const j in message_words) {
+				if(message_words[j].toLowerCase() == badwords[i].toLowerCase()) {
+			  throw new Error("Message cannot be sent. You used a bad word!");
 				}
-			}
+		  }
 		}
 	} catch (err) {
 		console.log(err);

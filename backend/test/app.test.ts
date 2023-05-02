@@ -11,7 +11,7 @@ test("Request the /hello route", async () => {
 	});
 	
 	response.statusCode.should.equal(200);
-	response.body.should.equal("hello");
+	response.body.should.equal("hello, you've reached the server!");
 	
 });
 
