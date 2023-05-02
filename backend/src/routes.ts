@@ -3,6 +3,7 @@ import { Match } from "./db/entities/Match.js";
 import {Message} from "./db/entities/Message.js";
 import {User} from "./db/entities/User.js";
 import {ICreateUsersBody} from "./types.js";
+import { badWordFilter } from "./resources/bad_word_filter.js";
 
 async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 	if (!app) {
@@ -129,6 +130,8 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		
 	});
 	
+	//TODO: Check that error messages make sense for new routes
+	
 	// CREATE new message
 	// eslint-disable-next-line max-len
 	app.post<{ Body: { sender: string, receiver: string, message: string } }>("/messages", async (req, reply) => {
@@ -139,6 +142,9 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 			const receiver_profile = await req.em.findOne(User, {email: receiver});
 			// do the same for the matcher/owner
 			const sender_profile = await req.em.findOne(User, {email: sender});
+			
+			// check for bad words...will throw error if bad words are detected
+			await badWordFilter(message);
 			
 			//create a new message between them
 			const newMessage = await req.em.create(Message, {
@@ -164,6 +170,11 @@ async function DoggrRoutes(app: FastifyInstance, _options = {}) {
 		const {messageId, message} = req.body;
 		
 		const messageToChange = await req.em.findOne(Message, {messageId});
+		
+		// check for bad words...throws error if bad words are found
+		await badWordFilter(message);
+		
+		// update message
 		messageToChange.message = message;
 		
 		// Reminder -- this is how we persist our JS object changes to the database itself
