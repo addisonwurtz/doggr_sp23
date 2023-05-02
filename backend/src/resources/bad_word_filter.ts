@@ -14,7 +14,7 @@ export const badWordFilter = async function(message:string) {
 		for (const each in badwords) {
 			for (const word in message_words) {
 				if (each == word) {
-					throw new Error("Message cannot be sent. You used a bad word.");
+					throw new Error("Message cannot be sent. You used a bad word!");
 					
 				}
 			}

@@ -7,18 +7,30 @@ export class MessageSeeder extends Seeder {
 		em.create(Message, {
 			sender: 1,
 			receiver: 2,
-			message: "Hello, how are you?"
+			message: "Hello Dogbert, how are you? \nI'm Spot!"
+		});
+	  
+	  	em.create(Message, {
+			sender: 1,
+			receiver: 3,
+			message: "Hi Doglord, how are you? \nI'm Spot!"
+	  	});
+	  
+	  	em.create(Message, {
+			sender: 1,
+			receiver: 4,
+			message: "Hello NotADog, how are you? \nI'm Spot!"
+		  });
+		
+		em.create(Message, {
+			sender: 2,
+			receiver: 1,
+			message: "Pretty good, hbu?"
 		});
 		
 		em.create(Message, {
 			sender: 2,
 			receiver: 1,
-			message: "Pretty well, hbu?"
-		});
-		
-		em.create(Message, {
-			sender: 2,
-			receiver: 3,
 			message: "Enjoying the weather!"
 		});
 		
