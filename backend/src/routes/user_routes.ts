@@ -31,7 +31,7 @@ export function UserRoutesInit(app: FastifyInstance) {
 				password,
 				petType,
 				// We'll only create Admins manually!
-				role: UserRole.USER
+				role: UserRole.USER,
 			});
 
 			await req.em.flush();
@@ -46,7 +46,7 @@ export function UserRoutesInit(app: FastifyInstance) {
 		const { id } = req.body;
 
 		try {
-			const theUser = await req.em.findOneOrFail(User, id, {strict: true});
+			const theUser = await req.em.findOneOrFail(User, id, { strict: true });
 			reply.send(theUser);
 		} catch (err) {
 			reply.status(500).send(err);
@@ -57,7 +57,7 @@ export function UserRoutesInit(app: FastifyInstance) {
 	app.put<{ Body: IUpdateUsersBody }>("/users", async (req, reply) => {
 		const { name, id, petType } = req.body;
 
-		const userToChange = await req.em.findOneOrFail(User, id, {strict: true});
+		const userToChange = await req.em.findOneOrFail(User, id, { strict: true });
 		userToChange.name = name;
 		userToChange.petType = petType;
 
@@ -67,33 +67,38 @@ export function UserRoutesInit(app: FastifyInstance) {
 	});
 
 	// DELETE
-	app.delete<{ Body: { my_id: number; id_to_delete: number, password: string } }>("/users", async (req, reply) => {
-		const { my_id, id_to_delete, password } = req.body;
+	app.delete<{ Body: { my_id: number; id_to_delete: number; password: string } }>(
+		"/users",
+		async (req, reply) => {
+			const { my_id, id_to_delete, password } = req.body;
 
-		try {
-			// Authenticate my user's role
-			const me = await req.em.findOneOrFail(User, my_id, {strict: true});
-			// Check passwords match
-			if (me.password !== password) {
-				return reply.status(401).send();
+			try {
+				// Authenticate my user's role
+				const me = await req.em.findOneOrFail(User, my_id, { strict: true });
+				// Check passwords match
+				if (me.password !== password) {
+					return reply.status(401).send();
+				}
+
+				// Make sure the requester is an Admin
+				if (me.role === UserRole.USER) {
+					return reply.status(401).send({ message: "You are not an admin!" });
+				}
+
+				const theUserToDelete = await req.em.findOneOrFail(User, id_to_delete, { strict: true });
+
+				//Make sure the to-be-deleted user isn't an admin
+				if (theUserToDelete.role === UserRole.ADMIN) {
+					return reply
+						.status(401)
+						.send({ message: "You do not have enough privileges to delete an Admin!" });
+				}
+
+				await req.em.remove(theUserToDelete).flush();
+				return reply.send(theUserToDelete);
+			} catch (err) {
+				return reply.status(500).send(err);
 			}
-
-			// Make sure the requester is an Admin
-			if (me.role === UserRole.USER) {
-				return reply.status(401).send({ "message": "You are not an admin!"})
-			}
-
-			const theUserToDelete = await req.em.findOneOrFail(User, id_to_delete, {strict: true});
-
-			//Make sure the to-be-deleted user isn't an admin
-			if (theUserToDelete.role === UserRole.ADMIN) {
-				return reply.status(401).send({ "message": "You do not have enough privileges to delete an Admin!"})
-			}
-
-			await req.em.remove(theUserToDelete).flush();
-			return reply.send(theUserToDelete);
-		} catch (err) {
-			return reply.status(500).send(err);
 		}
-	});
+	);
 }

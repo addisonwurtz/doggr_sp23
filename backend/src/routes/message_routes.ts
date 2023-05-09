@@ -3,9 +3,8 @@ import { Message } from "../db/entities/Message.js";
 import { User } from "../db/entities/User.js";
 import { ICreateMessage } from "../types.js";
 
-
 export function MessageRoutesInit(app: FastifyInstance) {
-/////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////
 	// HOMEWORK 1
 	/////////////////////////////////////////////////////////////////////////////
 
@@ -92,7 +91,7 @@ export function MessageRoutesInit(app: FastifyInstance) {
 		const { message_id, message } = req.body;
 
 		try {
-			const msg = await req.em.findOneOrFail(Message, message_id, {strict: true});
+			const msg = await req.em.findOneOrFail(Message, message_id, { strict: true });
 			msg.message = message;
 			await req.em.persistAndFlush(msg);
 			return reply.send(msg);
@@ -102,49 +101,49 @@ export function MessageRoutesInit(app: FastifyInstance) {
 	});
 
 	// Delete a specific message -- should we check for admin role here? Probably!
-	app.delete<{ Body: { my_id: number, message_id: number; password: string } }>("/messages", async (req, reply) => {
-		const { my_id, message_id, password } = req.body;
-
-		try {
-			const me = await req.em.findOneOrFail(User, my_id, {strict: true});
-			// Check passwords match
-			if (me.password !== password) {
-				return reply.status(401).send();
-			}
-
-			const msgToDelete = await req.em.findOneOrFail(Message, message_id, {strict: true});
-			await req.em.removeAndFlush(msgToDelete);
-			return reply.send();
-		} catch (err) {
-			return reply.status(500).send({ message: err.message });
-		}
-	});
-
-	// Delete all sent messages
-	app.delete<{ Body: { my_id: number, password: string } }>(
-		"/messages/all",
+	app.delete<{ Body: { my_id: number; message_id: number; password: string } }>(
+		"/messages",
 		async (req, reply) => {
-			const { my_id, password } = req.body;
+			const { my_id, message_id, password } = req.body;
 
 			try {
 				const me = await req.em.findOneOrFail(User, my_id, { strict: true });
-
 				// Check passwords match
 				if (me.password !== password) {
 					return reply.status(401).send();
 				}
 
-				// populate our messages_sent relation
-				await me.messages_sent.init();
-				// Remove them all from the collection, which because of orphanRemoval: true, will also delete them fully
-				me.messages_sent.removeAll();
-
-				await req.em.flush();
-
-				return reply.status(200).send();
+				const msgToDelete = await req.em.findOneOrFail(Message, message_id, { strict: true });
+				await req.em.removeAndFlush(msgToDelete);
+				return reply.send();
 			} catch (err) {
 				return reply.status(500).send({ message: err.message });
 			}
 		}
 	);
+
+	// Delete all sent messages
+	app.delete<{ Body: { my_id: number; password: string } }>("/messages/all", async (req, reply) => {
+		const { my_id, password } = req.body;
+
+		try {
+			const me = await req.em.findOneOrFail(User, my_id, { strict: true });
+
+			// Check passwords match
+			if (me.password !== password) {
+				return reply.status(401).send();
+			}
+
+			// populate our messages_sent relation
+			await me.messages_sent.init();
+			// Remove them all from the collection, which because of orphanRemoval: true, will also delete them fully
+			me.messages_sent.removeAll();
+
+			await req.em.flush();
+
+			return reply.status(200).send();
+		} catch (err) {
+			return reply.status(500).send({ message: err.message });
+		}
+	});
 }

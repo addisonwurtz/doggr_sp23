@@ -1,11 +1,10 @@
 import type { Dictionary, EntityManager } from "@mikro-orm/core";
-import { Seeder } from '@mikro-orm/seeder';
+import { Seeder } from "@mikro-orm/seeder";
 import { Message } from "../entities/Message.js";
-import {User} from "../entities/User.js";
+import { User } from "../entities/User.js";
 
 export class MessageSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
-
 		const msgRepo = em.getRepository(Message);
 
 		// https://mikro-orm.io/docs/seeding#shared-context
@@ -40,6 +39,5 @@ export class MessageSeeder extends Seeder {
 			receiver: context.user1,
 			message: "Test message 6",
 		});
-
 	}
 }
