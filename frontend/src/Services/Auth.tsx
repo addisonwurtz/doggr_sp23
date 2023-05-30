@@ -57,6 +57,7 @@ export const AuthProvider = ({ children }: any) => {
 		} catch (err) {
 			console.error("Failed to handle login: ", err);
 			navigate("/login");
+			//navigate("http://localhost:5173/login");
 			return false;
 		}
 	};
@@ -80,8 +81,7 @@ export const AuthProvider = ({ children }: any) => {
 				userId,
 				handleLogin,
 				handleLogout,
-			}}
-		>
+			}}>
 			{children}
 		</AuthContext.Provider>
 	);
@@ -94,7 +94,7 @@ export const useAuth = () => {
 function getTokenFromStorage() {
 	const tokenString = localStorage.getItem("token");
 	console.log(tokenString);
-	if ( typeof tokenString === 'undefined' || tokenString === null) {
+	if (typeof tokenString === "undefined" || tokenString === null) {
 		console.log("No token found");
 		return null;
 	}
