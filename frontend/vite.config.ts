@@ -17,10 +17,9 @@ export default defineConfig(({ command, mode }) => {
 			environment: "jsdom",
 			setupFiles: "./test/setup.ts",
 		},
-		// added this becuase of weird build error saying I had top level await
-		//build: {
-		//	target: "esnext",
-		//},
+		build: {
+			target: "esnext",
+		},
 		// vite config
 		// https://github.com/vitejs/vite/pull/9880 I am so angry about this
 		envPrefix: alphabet,

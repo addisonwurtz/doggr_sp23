@@ -8,23 +8,28 @@ import { ProtectedRoute } from "@/Components/ProtectedRoute.tsx";
 import { ProfileType, State } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
-import React, { useEffect, useState } from "react";
-import { Link, Route, Routes } from "react-router-dom";
+import { MatchService } from "@/Services/MatchService.tsx";
+import { PassService } from "@/Services/PassService.tsx";
+import React, { useCallback, useEffect, useState } from "react";
+import { Link, Route, Routes, useNavigate } from "react-router-dom";
 import "@css/DoggrStyles.css";
+import { ProfileProps } from "@/Components/Profile.tsx";
 
 export function DoggrRouter() {
 	const auth = useAuth();
-	const [currentProfile, setCurrentProfile] = useState<ProfileType>();
-
-	const fetchProfile = () => {
+	const [currentProfile, setCurrentProfile] = useState<ProfileType | null>();
+	const fetchProfile = useCallback(() => {
 		getNextProfileFromServer()
 			.then((response) => setCurrentProfile(response))
 			.catch((err) => console.log("Error in fetch profile", err));
-	};
+		//console.log("DoggrRoutes fetchProfile: " + currentProfile);
+	}, []);
 
 	useEffect(() => {
-		fetchProfile();
-	}, []);
+		if (currentProfile == null) {
+			fetchProfile();
+		}
+	}, [currentProfile, fetchProfile]);
 
 	return (
 		<div className={"doggrfancy"}>
@@ -63,7 +68,7 @@ export function DoggrRouter() {
 					path="/match"
 					element={
 						<ProtectedRoute>
-							<Match {...currentProfile} />
+							<Match currentProfile={currentProfile} fetchProfile={fetchProfile} />
 						</ProtectedRoute>
 					}
 				/>
@@ -74,7 +79,7 @@ export function DoggrRouter() {
 					path="/messages"
 					element={
 						<ProtectedRoute>
-							<Message {...currentProfile} />
+							<Message currentProfile={currentProfile} fetchProfile={fetchProfile} />
 						</ProtectedRoute>
 					}
 				/>

@@ -1,12 +1,14 @@
 import type { Dictionary, EntityManager } from "@mikro-orm/core";
 import { Seeder } from "@mikro-orm/seeder";
+import path from "path";
+import { fileURLToPath } from "url";
 import { User, UserRole } from "../entities/User.js";
 import bcrypt from "bcrypt";
-
+import fs from "fs";
+import { UploadFileToMinio } from "../../plugins/minio.js";
 
 export class UserSeeder extends Seeder {
 	async run(em: EntityManager, context: Dictionary): Promise<void> {
-
 		const hashedPw = await bcrypt.hash("password", 10);
 
 		// https://mikro-orm.io/docs/seeding#shared-context
@@ -42,7 +44,7 @@ export class UserSeeder extends Seeder {
 			email: "email4@email.com",
 			password: hashedPw,
 			petType: "Cat",
-			imgUri: "dog.jpg",
+			imgUri: "FionaSnowshoe.jpg",
 			role: UserRole.USER,
 		});
 	}

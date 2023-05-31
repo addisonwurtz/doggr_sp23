@@ -6,17 +6,11 @@ import { MessageService } from "@/Services/MessageService.tsx";
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-export function Message(props: ProfileType) {
+export function Message({ currentProfile, fetchProfile }) {
 	const auth = useAuth();
-	const [currentProfile, setCurrentProfile] = useState<ProfileType>(props);
+	//const [currentProfile, setCurrentProfile] = useState<ProfileType>(props);
 	const [message, setMessage] = useState("");
 	const [buttonName, setButtonName] = useState("Send");
-
-	useEffect(() => {
-		console.log("in Message useEffect ");
-		console.log(currentProfile.name);
-		setCurrentProfile(props);
-	}, [currentProfile, props]);
 
 	const onSendButtonClick = () => {
 		MessageService.send(auth.userId, currentProfile.id, message).catch((err) => {
