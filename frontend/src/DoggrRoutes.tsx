@@ -79,7 +79,7 @@ export function DoggrRouter() {
 					path="/messages"
 					element={
 						<ProtectedRoute>
-							<Message currentProfile={currentProfile} fetchProfile={fetchProfile} />
+							<Message currentProfile={currentProfile} />
 						</ProtectedRoute>
 					}
 				/>

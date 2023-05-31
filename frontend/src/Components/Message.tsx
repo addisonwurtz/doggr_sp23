@@ -6,7 +6,7 @@ import { MessageService } from "@/Services/MessageService.tsx";
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-export function Message({ currentProfile, fetchProfile }) {
+export function Message({ currentProfile }) {
 	const auth = useAuth();
 	//const [currentProfile, setCurrentProfile] = useState<ProfileType>(props);
 	const [message, setMessage] = useState("");
