@@ -1,40 +1,26 @@
 import { MessageProfileView } from "@/Components/MessageProfileView.tsx";
-import { ProfileType } from "@/DoggrTypes.ts";
+import { ProfileProps } from "@/Components/Profile.tsx";
+import { State, ProfileType } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
-import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
 import { MessageService } from "@/Services/MessageService.tsx";
-import { render } from "@testing-library/react";
 import { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 export const Message = () => {
 	const auth = useAuth();
 	const [currentProfile, setCurrentProfile] = useState<ProfileType>();
-	const [message, setMessage] = useState("");
 
-	const fetchProfile = () => {
-		getNextProfileFromServer()
-			.then((response) => setCurrentProfile(response))
-			.catch((err) => console.log("Error in fetch profile", err));
-	};
+	const [message, setMessage] = useState("");
+	const [buttonName, setButtonName] = useState("Send");
 
 	useEffect(() => {
-		fetchProfile();
-	}, []);
+		console.log("in useEffect ");
+	}, [currentProfile]);
 
 	const onSendButtonClick = () => {
-		MessageService.send(auth.userId, currentProfile.id, message)
-			.then(changeButtonState)
-			.catch((err) => {
-				console.error(err);
-				//fetchProfile();
-			});
-	};
-
-	const state = { name: "Send" };
-
-	const changeButtonState = () => {
-		state.name = "Sent!";
-		console.log("button state changed");
+		MessageService.send(auth.userId, currentProfile.id, message).catch((err) => {
+			console.error(err);
+		});
 	};
 
 	const profile = <MessageProfileView {...currentProfile} onSendButtonClick={onSendButtonClick} />;
@@ -55,8 +41,13 @@ export const Message = () => {
 						name={"message"}
 					/>
 				</div>
-				<button className="btn btn-circle" onClick={onSendButtonClick}>
-					{state.name}
+				<button
+					className="btn btn-circle"
+					onClick={() => {
+						onSendButtonClick();
+						setButtonName("Sent!");
+					}}>
+					{buttonName}
 				</button>
 			</div>
 		</div>

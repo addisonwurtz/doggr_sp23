@@ -27,7 +27,7 @@ export function Profile(props: ProfileProps) {
 				<button className="btn btn-circle" onClick={onLikeButtonClick}>
 					Like
 				</button>
-				<Link to={"/messages"}>
+				<Link to={"/messages"} state={props}>
 					<button className="btn btn-circle" onClick={onMessageButtonClick}>
 						Message
 					</button>

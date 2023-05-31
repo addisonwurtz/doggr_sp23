@@ -4,12 +4,11 @@ import { useAuth } from "@/Services/Auth.tsx";
 import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
 import { MatchService } from "@/Services/MatchService.tsx";
 import { PassService } from "@/Services/PassService.tsx";
-import { useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const Match = () => {
 	const [currentProfile, setCurrentProfile] = useState<ProfileType>();
-
 	const auth = useAuth();
 
 	const fetchProfile = () => {
@@ -43,6 +42,7 @@ export const Match = () => {
 	const navigate = useNavigate();
 
 	const onMessageButtonClick = () => {
+		console.log(currentProfile);
 		navigate("/messages");
 	};
 

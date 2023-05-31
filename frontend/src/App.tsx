@@ -3,6 +3,7 @@ import { Login } from "@/Components/Login.tsx";
 import { Match } from "@/Components/Match.tsx";
 import { DoggrRouter } from "@/DoggrRoutes.tsx";
 import { AuthProvider } from "@/Services/Auth.tsx";
+import { messageContext } from "@/Services/MessageContext.tsx";
 import { Link, Route, Routes, Router, BrowserRouter } from "react-router-dom";
 import "@css/DoggrStyles.css";
 
@@ -12,7 +13,7 @@ export function App() {
 		<BrowserRouter>
 			<AuthProvider>
 				<div className="App doggr">
-					<DoggrRouter/>
+					<DoggrRouter />
 				</div>
 			</AuthProvider>
 		</BrowserRouter>

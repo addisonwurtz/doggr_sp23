@@ -5,12 +5,26 @@ import { Logout } from "@/Components/Logout.tsx";
 import { Match } from "@/Components/Match.tsx";
 import { Message } from "@/Components/Message.tsx";
 import { ProtectedRoute } from "@/Components/ProtectedRoute.tsx";
+import { ProfileType, State } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
+import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
+import { useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import "@css/DoggrStyles.css";
 
 export function DoggrRouter() {
 	const auth = useAuth();
+	const [currentProfile, setCurrentProfile] = useState<ProfileType>();
+
+	const fetchProfile = () => {
+		getNextProfileFromServer()
+			.then((response) => setCurrentProfile(response))
+			.catch((err) => console.log("Error in fetch profile", err));
+	};
+
+	useEffect(() => {
+		fetchProfile();
+	}, []);
 
 	return (
 		<div className={"doggrfancy"}>
@@ -49,7 +63,7 @@ export function DoggrRouter() {
 					path="/match"
 					element={
 						<ProtectedRoute>
-							<Match />
+							<Match {...currentProfile} />
 						</ProtectedRoute>
 					}
 				/>
@@ -60,7 +74,7 @@ export function DoggrRouter() {
 					path="/messages"
 					element={
 						<ProtectedRoute>
-							<Message />
+							<Message {...currentProfile} />
 						</ProtectedRoute>
 					}
 				/>
