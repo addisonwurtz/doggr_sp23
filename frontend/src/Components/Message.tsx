@@ -6,16 +6,17 @@ import { MessageService } from "@/Services/MessageService.tsx";
 import { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-export const Message = () => {
+export function Message(props: ProfileType) {
 	const auth = useAuth();
-	const [currentProfile, setCurrentProfile] = useState<ProfileType>();
-
+	const [currentProfile, setCurrentProfile] = useState<ProfileType>(props);
 	const [message, setMessage] = useState("");
 	const [buttonName, setButtonName] = useState("Send");
 
 	useEffect(() => {
-		console.log("in useEffect ");
-	}, [currentProfile]);
+		console.log("in Message useEffect ");
+		console.log(currentProfile.name);
+		setCurrentProfile(props);
+	}, [currentProfile, props]);
 
 	const onSendButtonClick = () => {
 		MessageService.send(auth.userId, currentProfile.id, message).catch((err) => {
@@ -26,14 +27,15 @@ export const Message = () => {
 	const profile = <MessageProfileView {...currentProfile} onSendButtonClick={onSendButtonClick} />;
 
 	return (
-		<div>
+		<div className={"flex flex-col items-center rounded-box bg-slate-700 w-4/5 mx-auto"}>
 			<>{profile}</>
 
-			<div className={"space-x-9 my-1"}>
+			<div className={"items-center my-3.5"}>
 				<div>
-					<label htmlFor={"message"}>Message:</label>
+					<label htmlFor={"message"}></label>
 					<input
 						type="text"
+						placeholder={"Type message here..."}
 						id="message"
 						required
 						value={message}
@@ -41,15 +43,17 @@ export const Message = () => {
 						name={"message"}
 					/>
 				</div>
-				<button
-					className="btn btn-circle"
-					onClick={() => {
-						onSendButtonClick();
-						setButtonName("Sent!");
-					}}>
-					{buttonName}
-				</button>
+				<div className={"flex flex-col items-center my-3.5"}>
+					<button
+						className="btn btn-circle"
+						onClick={() => {
+							onSendButtonClick();
+							setButtonName("Sent!");
+						}}>
+						{buttonName}
+					</button>
+				</div>
 			</div>
 		</div>
 	);
-};
+}

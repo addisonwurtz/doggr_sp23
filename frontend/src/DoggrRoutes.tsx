@@ -8,7 +8,7 @@ import { ProtectedRoute } from "@/Components/ProtectedRoute.tsx";
 import { ProfileType, State } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Route, Routes } from "react-router-dom";
 import "@css/DoggrStyles.css";
 

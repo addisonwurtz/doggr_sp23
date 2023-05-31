@@ -1,4 +1,4 @@
-import { Profile } from "@/Components/Profile.tsx";
+import { Profile, ProfileProps } from "@/Components/Profile.tsx";
 import { ProfileType } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
@@ -7,8 +7,8 @@ import { PassService } from "@/Services/PassService.tsx";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export const Match = () => {
-	const [currentProfile, setCurrentProfile] = useState<ProfileType>();
+export function Match(props: ProfileType) {
+	const [currentProfile, setCurrentProfile] = useState<ProfileType>(props);
 	const auth = useAuth();
 
 	const fetchProfile = () => {
@@ -18,8 +18,11 @@ export const Match = () => {
 	};
 
 	useEffect(() => {
+		//fetchProfile();
 		fetchProfile();
-	}, []);
+		console.log("in Match useEffect: ");
+		console.log(currentProfile.name);
+	}, [currentProfile.name]);
 
 	const onLikeButtonClick = () => {
 		MatchService.send(auth.userId, currentProfile.id)
@@ -56,4 +59,4 @@ export const Match = () => {
 	);
 
 	return <>{profile}</>;
-};
+}
