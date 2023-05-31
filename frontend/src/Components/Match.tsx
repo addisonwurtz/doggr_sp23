@@ -1,19 +1,11 @@
-import { Profile, ProfileProps } from "@/Components/Profile.tsx";
-import { ProfileType } from "@/DoggrTypes.ts";
+import { Profile } from "@/Components/Profile.tsx";
 import { useAuth } from "@/Services/Auth.tsx";
-import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
 import { MatchService } from "@/Services/MatchService.tsx";
 import { PassService } from "@/Services/PassService.tsx";
-import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export function Match({ currentProfile, fetchProfile }) {
 	const auth = useAuth();
-
-	useEffect(() => {
-		console.log("in Match useEffect: ");
-		console.log(currentProfile.name);
-	}, [currentProfile.name]);
 
 	const onLikeButtonClick = () => {
 		MatchService.send(auth.userId, currentProfile.id)
@@ -37,7 +29,7 @@ export function Match({ currentProfile, fetchProfile }) {
 
 	const onMessageButtonClick = () => {
 		console.log(currentProfile);
-		navigate("/messages");
+		navigate("/messages", currentProfile);
 	};
 
 	const profile = (

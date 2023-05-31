@@ -1,14 +1,10 @@
 import { MessageProfileView } from "@/Components/MessageProfileView.tsx";
-import { ProfileProps } from "@/Components/Profile.tsx";
-import { State, ProfileType } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { MessageService } from "@/Services/MessageService.tsx";
-import { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useState } from "react";
 
 export function Message({ currentProfile }) {
 	const auth = useAuth();
-	//const [currentProfile, setCurrentProfile] = useState<ProfileType>(props);
 	const [message, setMessage] = useState("");
 	const [buttonName, setButtonName] = useState("Send");
 

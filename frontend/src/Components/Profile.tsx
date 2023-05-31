@@ -1,7 +1,5 @@
 import { ProfileType } from "@/DoggrTypes.ts";
-import { useEffect } from "react";
 import "@css/DoggrStyles.css";
-import { Link } from "react-router-dom";
 
 export type ProfileProps = ProfileType & {
 	onLikeButtonClick: () => void;
@@ -27,11 +25,9 @@ export function Profile(props: ProfileProps) {
 				<button className="btn btn-circle" onClick={onLikeButtonClick}>
 					Like
 				</button>
-				<Link to={"/messages"} state={props}>
-					<button className="btn btn-circle" onClick={onMessageButtonClick}>
-						Message
-					</button>
-				</Link>
+				<button className="btn btn-circle" onClick={onMessageButtonClick}>
+					Message
+				</button>
 			</div>
 		</div>
 	);

@@ -5,19 +5,17 @@ import { Logout } from "@/Components/Logout.tsx";
 import { Match } from "@/Components/Match.tsx";
 import { Message } from "@/Components/Message.tsx";
 import { ProtectedRoute } from "@/Components/ProtectedRoute.tsx";
-import { ProfileType, State } from "@/DoggrTypes.ts";
+import { ProfileType } from "@/DoggrTypes.ts";
 import { useAuth } from "@/Services/Auth.tsx";
 import { getNextProfileFromServer } from "@/Services/HttpClient.tsx";
-import { MatchService } from "@/Services/MatchService.tsx";
-import { PassService } from "@/Services/PassService.tsx";
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, Route, Routes, useNavigate } from "react-router-dom";
+import { Link, Route, Routes } from "react-router-dom";
 import "@css/DoggrStyles.css";
-import { ProfileProps } from "@/Components/Profile.tsx";
 
 export function DoggrRouter() {
 	const auth = useAuth();
 	const [currentProfile, setCurrentProfile] = useState<ProfileType | null>();
+
 	const fetchProfile = useCallback(() => {
 		getNextProfileFromServer()
 			.then((response) => setCurrentProfile(response))
